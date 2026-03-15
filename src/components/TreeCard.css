@@ -1,0 +1,133 @@
+/* Glass UI カード + Micro Interaction（未来UI実験） */
+.grw-tree-card-wrap {
+  margin-bottom: 2px;
+}
+
+.grw-tree-card {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 0.75rem;
+  /* Glass: 背景ぼかし + 半透明 */
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 12px;
+  color: #e8eaf6;
+  font-size: 0.9rem;
+  min-height: 40px;
+  box-sizing: border-box;
+  /* Micro Interaction: 約200ms */
+  transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease, background 0.2s ease;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+}
+
+.grw-tree-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 10px 28px rgba(0, 0, 0, 0.4), 0 0 20px rgba(79, 195, 247, 0.15);
+  border-color: rgba(79, 195, 247, 0.5);
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.grw-tree-card.is-selected {
+  border-color: #4fc3f7;
+  background: rgba(0, 188, 212, 0.12);
+  box-shadow: 0 4px 16px rgba(79, 195, 247, 0.2);
+}
+
+.grw-tree-card-depth-0 { border-left: 3px solid #4fc3f7; }
+.grw-tree-card-depth-1 { border-left: 3px solid #81d4fa; }
+.grw-tree-card-depth-2 { border-left: 3px solid #b3e5fc; }
+.grw-tree-card-depth-3 { border-left: 3px solid #e1f5fe; }
+
+/* ドラッグ中はホバー効果を抑える */
+.grw-tree-card.opacity-50:hover {
+  transform: none;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+}
+
+.grw-tree-card-drag {
+  cursor: grab;
+  color: rgba(232, 234, 246, 0.6);
+  padding: 0.2rem;
+  flex-shrink: 0;
+}
+.grw-tree-card-drag:active { cursor: grabbing; }
+
+.grw-tree-card-expand {
+  width: 24px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  color: rgba(232, 234, 246, 0.8);
+  flex-shrink: 0;
+  border: none;
+  background: transparent;
+  border-radius: 4px;
+}
+.grw-tree-card-expand:hover { background: rgba(79, 195, 247, 0.2); }
+
+.grw-tree-card-expand.is-closed { transform: rotate(-90deg); }
+
+.grw-tree-card-title {
+  flex: 1;
+  min-width: 0;
+  border: none;
+  background: transparent;
+  color: inherit;
+  font-size: inherit;
+  outline: none;
+}
+
+.grw-tree-card-meta {
+  font-size: 0.75rem;
+  color: rgba(232, 234, 246, 0.6);
+  flex-shrink: 0;
+}
+
+.grw-tree-card-actions {
+  display: flex;
+  gap: 0.25rem;
+  flex-shrink: 0;
+}
+
+.grw-tree-card-btn {
+  width: 28px;
+  height: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: none;
+  background: transparent;
+  color: rgba(232, 234, 246, 0.7);
+  cursor: pointer;
+  border-radius: 4px;
+}
+.grw-tree-card-btn:hover {
+  background: rgba(79, 195, 247, 0.2);
+  color: #e8eaf6;
+}
+.grw-tree-card-btn-delete:hover { background: rgba(244, 67, 54, 0.3); color: #ffcdd2; }
+
+.grw-tree-drop-zone {
+  height: 6px;
+  margin: 2px 0;
+  border-radius: 4px;
+  background: transparent;
+  transition: background 0.15s;
+}
+.grw-tree-drop-zone.is-drag-over { background: rgba(79, 195, 247, 0.5); }
+
+.grw-tree-drop-zone-child {
+  margin-left: 24px;
+  padding: 0.25rem 0.5rem;
+  font-size: 0.75rem;
+  color: rgba(232, 234, 246, 0.5);
+  border: 1px dashed rgba(79, 195, 247, 0.4);
+  border-radius: 4px;
+  min-height: 20px;
+}
+.grw-tree-drop-zone-child.is-drag-over { background: rgba(79, 195, 247, 0.2); color: #4fc3f7; }

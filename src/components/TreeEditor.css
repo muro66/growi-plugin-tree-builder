@@ -1,0 +1,18 @@
+.grw-tree-editor {
+  min-height: 120px;
+  padding: 0.5rem 0;
+}
+
+.grw-tree-drop-zone-append {
+  min-height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: rgba(232, 234, 246, 0.5);
+  font-size: 0.8rem;
+  margin-top: 0.5rem;
+}
+.grw-tree-drop-zone-append.is-drag-over {
+  background: rgba(79, 195, 247, 0.2);
+  color: #4fc3f7;
+}

@@ -1,0 +1,90 @@
+.grw-tree-panel {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 4, 62, 0.95);
+  z-index: 1050;
+  display: flex;
+  flex-direction: column;
+  color: #e8eaf6;
+}
+
+.grw-tree-panel-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.75rem 1rem;
+  border-bottom: 1px solid rgba(79, 195, 247, 0.3);
+  background: rgba(0, 4, 62, 0.8);
+  flex-shrink: 0;
+}
+
+.grw-tree-panel-title {
+  font-weight: 600;
+  font-size: 1rem;
+}
+
+.grw-tree-panel-actions {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.grw-tree-panel-body {
+  flex: 1;
+  display: flex;
+  min-height: 0;
+}
+
+.grw-tree-panel-left {
+  width: 220px;
+  padding: 1rem;
+  border-right: 1px solid rgba(79, 195, 247, 0.3);
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.grw-tree-panel-center {
+  flex: 1;
+  overflow: auto;
+  padding: 1rem;
+}
+
+.grw-tree-panel-right {
+  width: 200px;
+  flex-shrink: 0;
+  overflow: auto;
+}
+
+.grw-tree-btn {
+  padding: 0.4rem 0.75rem;
+  font-size: 0.85rem;
+  border-radius: 6px;
+  border: 1px solid rgba(79, 195, 247, 0.5);
+  background: rgba(0, 188, 212, 0.15);
+  color: #e1f5fe;
+  cursor: pointer;
+  transition: background 0.15s, border-color 0.15s;
+}
+
+.grw-tree-btn:hover {
+  background: rgba(0, 188, 212, 0.25);
+  border-color: rgba(79, 195, 247, 0.7);
+}
+
+.grw-tree-btn-primary {
+  background: rgba(79, 195, 247, 0.3);
+}
+
+.grw-tree-path-display {
+  font-size: 0.8rem;
+  color: rgba(232, 234, 246, 0.9);
+  word-break: break-all;
+}
+
+.grw-tree-label {
+  font-size: 0.75rem;
+  color: rgba(232, 234, 246, 0.7);
+}
