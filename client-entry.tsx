@@ -12,6 +12,8 @@ function getSidebarContainer(): HTMLElement | null {
     document.querySelector('.grw-sidebar-nav') ||
     document.querySelector('.grw-sidebar-content') ||
     document.querySelector('.grw-sidebar .grw-sidebar-nav-container') ||
+    document.querySelector('.grw-sidebar-nav-container') ||
+    document.querySelector('#grw-sidebar-nav') ||
     document.querySelector('[class*="grw-sidebar"]') ||
     document.querySelector('[class*="sidebar"]') ||
     document.querySelector('.sidebar')
@@ -32,7 +34,7 @@ function createButton(id: string): HTMLButtonElement {
   const btn = document.createElement('button');
   btn.id = id;
   btn.type = 'button';
-  btn.className = 'btn btn-outline-secondary';
+  btn.className = 'btn btn-outline-secondary grw-tree-builder-sidebar-btn';
   btn.innerHTML = '📋 ツリー構築';
   btn.setAttribute('aria-label', 'ツリー構築を開く');
   btn.style.marginTop = '0.5rem';
@@ -46,7 +48,8 @@ function addSidebarButton(): boolean {
   if (document.getElementById(SIDEBAR_BTN_ID) || document.getElementById(FALLBACK_BTN_ID)) return true;
   const container = getSidebarContainer();
   if (container) {
-    container.insertBefore(createButton(SIDEBAR_BTN_ID), container.firstChild);
+    const btn = createButton(SIDEBAR_BTN_ID);
+    container.insertBefore(btn, container.firstChild);
     return true;
   }
   return false;
@@ -57,7 +60,7 @@ function addFallbackButton(): void {
   const btn = createButton(FALLBACK_BTN_ID);
   btn.style.position = 'fixed';
   btn.style.left = '8px';
-  btn.style.top = '60%';
+  btn.style.top = '50%';
   btn.style.transform = 'translateY(-50%)';
   btn.style.zIndex = '1040';
   btn.style.borderRadius = '8px';
@@ -90,16 +93,22 @@ function removePanelRoot(): void {
 
 const activate = (): void => {
   if (typeof window === 'undefined') return;
-  if (addSidebarButton()) return;
-  addFallbackButton();
-  if (document.readyState !== 'complete') {
-    window.addEventListener('load', addSidebarButton);
+  function tryAdd() {
+    if (addSidebarButton()) return;
+    addFallbackButton();
   }
-  [500, 1500, 3000].forEach((ms) =>
+  tryAdd();
+  if (document.readyState !== 'complete') {
+    window.addEventListener('load', tryAdd);
+  }
+  [500, 1500, 3000, 5000].forEach((ms) =>
     setTimeout(() => {
       if (document.getElementById(SIDEBAR_BTN_ID)) return;
-      if (addSidebarButton()) document.getElementById(FALLBACK_BTN_ID)?.remove();
-      else addFallbackButton();
+      if (addSidebarButton()) {
+        document.getElementById(FALLBACK_BTN_ID)?.remove();
+      } else {
+        addFallbackButton();
+      }
     }, ms)
   );
 };
