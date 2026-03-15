@@ -35,8 +35,9 @@ function createButton(id: string): HTMLButtonElement {
   btn.id = id;
   btn.type = 'button';
   btn.className = 'btn btn-outline-secondary grw-tree-builder-sidebar-btn';
-  btn.innerHTML = '📋 ツリー構築';
   btn.setAttribute('aria-label', 'ツリー構築を開く');
+  btn.title = 'ツリー構築を開く';
+  btn.innerHTML = '<span class="grw-tree-builder-sidebar-icon" aria-hidden="true">📋</span>';
   btn.style.marginTop = '0.5rem';
   btn.style.marginLeft = '0.25rem';
   btn.style.marginRight = '0.25rem';

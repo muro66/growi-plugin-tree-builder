@@ -4,7 +4,11 @@ import TemplatePanel from './TemplatePanel';
 import type { TreeNode } from '../types';
 import { createTreeNode, prependChild, serializeTree, deserializeTree } from '../treeUtils';
 import { DEFAULT_TEMPLATES } from '../templates';
-import { getCurrentPath, fetchPagesUnderPath, filterDirectChildren } from '../api';
+
+function pathSegmentFromTitle(title: string): string {
+  return title.replace(/\//g, '-').replace(/\s+/g, ' ').trim() || 'untitled';
+}
+import { getCurrentPath, fetchPagesUnderPath, filterDirectChildren, fetchPageByPath, createPage } from '../api';
 import './Panel.css';
 
 const TREE_STORAGE_KEY = 'grw-tree-builder-data';
@@ -47,6 +51,8 @@ export default function Panel({ onClose }: PanelProps) {
   const [expandedIds, setExpandedIds] = React.useState<Set<string>>(new Set());
   const [loadError, setLoadError] = React.useState<string | null>(null);
   const [saveStatus, setSaveStatus] = React.useState<string | null>(null);
+  const [pushStatus, setPushStatus] = React.useState<string | null>(null);
+  const [pushInProgress, setPushInProgress] = React.useState(false);
 
   const handleToggleExpand = React.useCallback((id: string) => {
     setExpandedIds((prev) => {
@@ -110,6 +116,48 @@ export default function Panel({ onClose }: PanelProps) {
     }
   }, [rootPath, nodes]);
 
+  const handlePushToGrowi = React.useCallback(async () => {
+    setPushStatus(null);
+    setPushInProgress(true);
+    try {
+      let created = 0;
+      let skipped = 0;
+      let failed = 0;
+      async function processNodeList(nodeList: TreeNode[], parentPath: string): Promise<void> {
+        for (const node of nodeList) {
+          const seg = pathSegmentFromTitle(node.title);
+          const path = parentPath === '/' ? `/${seg}` : `${parentPath}/${seg}`;
+          const existing = await fetchPageByPath(path);
+          if (existing) {
+            skipped += 1;
+          } else {
+            const template = node.templateId ? DEFAULT_TEMPLATES.find((t) => t.id === node.templateId) : null;
+            const body = template?.body?.replace('{{title}}', node.title) ?? `# ${node.title}\n\n`;
+            const ok = await createPage(path, body);
+            if (ok) created += 1;
+            else failed += 1;
+          }
+          if (node.children.length > 0) await processNodeList(node.children, path);
+        }
+      }
+      if (nodes.length === 1 && nodes[0]) {
+        const root = nodes[0];
+        const basePath = rootPath === '/' ? '' : rootPath.replace(/^\//, '');
+        const parentPath = basePath ? `/${basePath}` : '/';
+        await processNodeList(root.children, parentPath);
+      }
+      setPushStatus(
+        failed > 0
+          ? `作成 ${created}、スキップ ${skipped}、失敗 ${failed}`
+          : `GROWI に反映しました（作成 ${created}、既存 ${skipped}）`
+      );
+    } catch (e) {
+      setPushStatus(e instanceof Error ? e.message : '反映に失敗しました');
+    } finally {
+      setPushInProgress(false);
+    }
+  }, [rootPath, nodes]);
+
   return (
     <div className="grw-tree-panel" role="dialog" aria-label="ツリー構築">
       <header className="grw-tree-panel-header">
@@ -134,6 +182,15 @@ export default function Panel({ onClose }: PanelProps) {
             ツリーを保存（ローカル）
           </button>
           {saveStatus && <div className="grw-tree-label">{saveStatus}</div>}
+          <button
+            type="button"
+            className="grw-tree-btn"
+            onClick={handlePushToGrowi}
+            disabled={pushInProgress}
+          >
+            {pushInProgress ? '反映中...' : 'GROWI に反映'}
+          </button>
+          {pushStatus && <div className="grw-tree-label">{pushStatus}</div>}
         </aside>
         <main className="grw-tree-panel-center">
           <TreeEditor
